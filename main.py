@@ -24,12 +24,8 @@ def find_data():
         'h1', class_='margin-0').text
 
     ##### Balance Sheet Months #####
-    borrowings_dates = soup.find(
-        'section', id='balance-sheet', class_='card card-large').text
-    date_i = borrowings_dates.find('Mar')
-    shcap_i = borrowings_dates.find('Share')
-    borrowings_dates_list = borrowings_dates[date_i: shcap_i].strip().split(
-        '\n')
+    borrowings_dates_list = soup.find(
+        'section', id='balance-sheet', class_='card card-large').table.thead.tr.text.strip().split('\n')
 
     ##### Borrowings or Debts - Balance Sheet #####
     borrowings_values = soup.find(
