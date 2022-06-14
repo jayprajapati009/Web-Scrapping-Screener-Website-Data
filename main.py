@@ -12,7 +12,7 @@ def find_data():
 
     # To fetch the html data from the website
     html_text = requests.get(
-        'https://www.screener.in/company/540519/consolidated/#profit-loss').text
+        'https://www.screener.in/company/540455/').text
 
     # Parsing the data using lxml Parser and Beautiful Soup Library
     soup = bs(html_text, 'lxml')
@@ -84,10 +84,10 @@ def find_data():
     worksheet = workbook.add_worksheet()
 
     # Borrowings Coloum (B) width
-    worksheet.set_column('B:B', 20)
-
-    # Borrowings Coloum (J) width
-    worksheet.set_column('J:J', 20)
+    worksheet.set_column('A:A', 30)
+    worksheet.set_column('B:B', 15)
+    worksheet.set_column('D:D', 15)
+    worksheet.set_column('G:G', 10)
 
     # Defined Formats
     bold = workbook.add_format({'bold': True})
@@ -101,81 +101,73 @@ def find_data():
         'align': 'center',
         'valign': 'vcenter'})
 
+    for slicingIndexb in range(len(borrowings_dates_list)):
+        if "2016" in pldates_list[slicingIndexb]:
+            break
+        else:
+            slicingIndexb = slicingIndexb + 1
+
+    for slicingIndex in range(len(pldates_list)):
+        if "2016" in pldates_list[slicingIndex]:
+            break
+        else:
+            slicingIndex = slicingIndex+1
+
+    updated_borrowings_dates_list = borrowings_dates_list[slicingIndexb:len(
+        borrowings_dates_list)]
+    updated_borrowings_values_list = borrowings_values_list[slicingIndexb:len(
+        borrowings_values)]
+    updated_shareCap_list = shareCap_list[slicingIndexb:len(shareCap_list)]
+    updated_Reserves_list = Reserves_list[slicingIndexb:len(Reserves_list)]
+    shareHoldersFund = [float(updated_shareCap_list[i]) + float(updated_Reserves_list[i])
+                        for i in range(len(updated_shareCap_list))]
+
+    updated_pldates_list = pldates_list[slicingIndex:len(pldates_list)]
+    updated_pbt_list = pbt_list[slicingIndex:len(pbt_list)]
+    updated_pat_list = pat_list[slicingIndex:len(pat_list)]
+    updated_sales_listt = sales_list[slicingIndex:len(sales_list)]
+    updated_othInc_list = othInc_list[slicingIndex:len(othInc_list)]
+    totalRevenue = [float(updated_sales_listt[i]) + float(updated_othInc_list[i])
+                    for i in range(len(updated_sales_listt))]
+
+    print(updated_borrowings_values_list)
+
     # Headings Declarations
-    worksheet.merge_range('A1:J1', Company, merge_format)
-    worksheet.merge_range('A2:E2', "Balance Sheet", merge_format)
-    worksheet.merge_range('F2:K2', "Profit and Loss", merge_format)
-    worksheet.merge_range('A3:A4', 'Month', merge_format)
-    worksheet.merge_range('B3:B4', 'Borrowings/Debt', merge_format)
-    worksheet.merge_range('C3:E3', 'Shareholders Fund', merge_format)
-    worksheet.merge_range('F3:F4', 'Month', merge_format)
-    worksheet.merge_range('G3:G4', 'PBT', merge_format)
-    worksheet.merge_range('H3:H4', 'PAT', merge_format)
-    worksheet.merge_range('I3:K3', 'Total Revenue', merge_format)
+    worksheet.merge_range('B1:G1', 'Mar 2016', merge_format)
 
-    worksheet.write(3, 2, "Share Capital", title)
-    worksheet.write(3, 3, "Reserves", title)
-    worksheet.write(3, 4, "Total", title)
-    worksheet.write(3, 8, "Sales", title)
-    worksheet.write(3, 9, "Other Income", title)
-    worksheet.write(3, 10, "Total", title)
+    arow = 1
+    worksheet.write(1, 0, "Company", title)
+    worksheet.write(3, 0, Company, title)
+    print(updated_pldates_list)
+    for ele in range(6, len(updated_pldates_list)*6, 6):
 
-    row, col = 4, 0
-    for item in borrowings_dates_list:
-        worksheet.write(row, col, item, cen)
-        row += 1
+        worksheet.merge_range(
+            0, ele-5, 0, ele, updated_pldates_list[int((ele/6)-1)], merge_format)
 
-    row, col = 4, 1
-    for item1 in borrowings_values_list:
-        worksheet.write(row, col, item1, cen)
-        row += 1
+        worksheet.set_column(ele-5, ele-5, 15)
+        worksheet.write(arow, ele-5, "Shareholder", title)
+        worksheet.write(arow+1, ele-5, "Funds", title)
 
-    row, col = 4, 2
-    for item1 in shareCap_list:
-        worksheet.write(row, col, item1, cen)
-        row += 1
+        worksheet.write(arow, ele-4, "Debts", title)
 
-    row, col = 4, 3
-    for item1 in Reserves_list:
-        worksheet.write(row, col, item1, cen)
-        row += 1
+        worksheet.set_column(ele-3, ele-3, 15)
+        worksheet.write(arow, ele-3, "Total", title)
+        worksheet.write(arow+1, ele-3, "Revenue", title)
 
-    # shareHoldersFund = [float(shareCap_list[i]) + float(Reserves_list[i]) for i in range(len(shareCap_list))]
+        worksheet.write(arow, ele-2, "PBT", title)
 
-    row, col = 4, 4
-    for item1 in [float(shareCap_list[i]) + float(Reserves_list[i]) for i in range(len(shareCap_list))]:
-        worksheet.write(row, col, item1, cen)
-        row += 1
+        worksheet.write(arow, ele-1, "PAT", title)
 
-    row, col = 4, 5
-    for item1 in pldates_list:
-        worksheet.write(row, col, item1, cen)
-        row += 1
+        worksheet.set_column(ele, ele, 10)
+        worksheet.write(arow, ele, "Cash", title)
+        worksheet.write(arow+1, ele, "Cash Eq", title)
 
-    row, col = 4, 6
-    for item1 in pbt_list:
-        worksheet.write(row, col, item1, cen)
-        row += 1
-
-    row, col = 4, 7
-    for item1 in pat_list:
-        worksheet.write(row, col, item1, cen)
-        row += 1
-
-    row, col = 4, 8
-    for item1 in sales_list:
-        worksheet.write(row, col, item1, cen)
-        row += 1
-
-    row, col = 4, 9
-    for item1 in othInc_list:
-        worksheet.write(row, col, item1, cen)
-        row += 1
-
-    row, col = 4, 10
-    for item1 in [float(sales_list[i]) + float(othInc_list[i]) for i in range(len(shareCap_list))]:
-        worksheet.write(row, col, item1, cen)
-        row += 1
+        worksheet.write(arow+2, ele-5, shareHoldersFund[int((ele/6)-1)], title)
+        worksheet.write(
+            arow+2, ele-4, updated_borrowings_values_list[int((ele/6)-1)], title)
+        worksheet.write(arow+2, ele-3, totalRevenue[int((ele/6)-1)], title)
+        worksheet.write(arow+2, ele-2, updated_pbt_list[int((ele/6)-1)], title)
+        worksheet.write(arow+2, ele-1, updated_pat_list[int((ele/6)-1)], title)
 
     workbook.close()
 

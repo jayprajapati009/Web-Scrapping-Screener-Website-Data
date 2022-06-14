@@ -12,7 +12,7 @@ def find_data():
 
     # To fetch the html data from the website
     html_text = requests.get(
-        'https://www.screener.in/company/540519/consolidated/#profit-loss').text
+        'https://www.screener.in/company/540455/').text
 
     # Parsing the data using lxml Parser and Beautiful Soup Library
     soup = bs(html_text, 'lxml')
@@ -80,7 +80,7 @@ def find_data():
     othInc_list = othInc[othInc_i+15: tax_i].strip().split('\n')
 
     # Create a workbook and add a worksheet
-    workbook = xlsxwriter.Workbook(f'{Company}_Data.xlsx')
+    workbook = xlsxwriter.Workbook(f'{Company}_Data_v1_1_2.xlsx')
     worksheet = workbook.add_worksheet()
 
     # Borrowings Coloum (B) width
