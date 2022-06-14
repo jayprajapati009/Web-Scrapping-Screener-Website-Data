@@ -12,7 +12,7 @@ def find_data():
 
     # To fetch the html data from the website
     html_text = requests.get(
-        'https://www.screener.in/company/540455/').text
+        'https://www.screener.in/company/540519/consolidated/#profit-loss').text
 
     # Parsing the data using lxml Parser and Beautiful Soup Library
     soup = bs(html_text, 'lxml')
@@ -102,13 +102,13 @@ def find_data():
         'valign': 'vcenter'})
 
     for slicingIndexb in range(len(borrowings_dates_list)):
-        if "2016" in pldates_list[slicingIndexb]:
+        if "2016" or "2017" or "2018" or "2019" or "2020" or "2021" or "2022" in pldates_list[slicingIndexb]:
             break
         else:
             slicingIndexb = slicingIndexb + 1
 
     for slicingIndex in range(len(pldates_list)):
-        if "2016" in pldates_list[slicingIndex]:
+        if "2016" or "2017" or "2018" or "2019" or "2020" or "2021" or "2022" in pldates_list[slicingIndex]:
             break
         else:
             slicingIndex = slicingIndex+1
