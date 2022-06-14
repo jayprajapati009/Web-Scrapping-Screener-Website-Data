@@ -9,7 +9,7 @@ os.chdir(r'C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrappin
 def find_data():
 
     html_text = re.get(
-        'https://www.screener.in/company/540416/consolidated/#balance-sheet').text
+        'https://www.screener.in/company/540519/consolidated/#profit-loss').text
     # html_text = re.get(
     #     'https://www.screener.in/company/540455/').text
 

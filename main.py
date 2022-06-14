@@ -5,16 +5,14 @@ import xlsxwriter
 import os
 
 # Setting up the directory to save the excel file in the same folder.
-os.chdir(r'C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping')
+os.chdir(r'C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Scraped Data')
 
 
 def find_data():
 
     # To fetch the html data from the website
     html_text = requests.get(
-        'https://www.screener.in/company/540416/consolidated/#balance-sheet').text
-    # html_text = re.get(
-    #     'https://www.screener.in/company/540455/').text
+        'https://www.screener.in/company/540519/consolidated/#profit-loss').text
 
     # Parsing the data using lxml Parser and Beautiful Soup Library
     soup = bs(html_text, 'lxml')
@@ -50,16 +48,8 @@ def find_data():
     Reserves_list = Reserves[shcap_i+15: Res].strip().split('\n')
 
     ##### Profit and Loss Months #####
-    pldates = soup.find(
-        'section', id='profit-loss', class_='card card-large').text
-    # print(pldates)
-    if 'Standalone' in pldates:
-        std_i = pldates.find('Standalone')
-    else:
-        std_i = pldates.find('Crores')
-    sales_i = pldates.find('Sales\xa0+')
-    pldates_list = pldates[std_i+25: sales_i].strip().split(
-        '\n')
+    pldates_list = soup.find(
+        'section', id='balance-sheet', class_='card card-large').table.thead.tr.text.strip().split('\n')
 
     ##### Profit Before Tax (PBT) - Profit and Loss #####
     pbt = soup.find(
@@ -164,7 +154,7 @@ def find_data():
     for item1 in pat_list:
         worksheet.write(row, col, item1, cen)
         row += 1
-    
+
     row, col = 4, 8
     for item1 in sales_list:
         worksheet.write(row, col, item1, cen)
