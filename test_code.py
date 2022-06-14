@@ -14,12 +14,9 @@ def find_data():
     #     'https://www.screener.in/company/540455/').text
 
     soup = bs(html_text, 'lxml')
-
-    cashEq = soup.find(
-        'section', id='balance-sheet', class_='card card-large').table.thead.tr.text
-    cashEq_list = cashEq.strip().split('/n')
-
-    print(cashEq_list)
+    borrowings_dates = soup.find(
+        'section', id='balance-sheet', class_='card card-large').table.thead.tr.text.strip().split('\n')
+    print(borrowings_dates)
 
 
 find_data()
