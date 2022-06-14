@@ -140,6 +140,13 @@ def find_data():
         worksheet.write(row, col, item1, cen)
         row += 1
 
+    # shareHoldersFund = [float(shareCap_list[i]) + float(Reserves_list[i]) for i in range(len(shareCap_list))]
+
+    row, col = 4, 4
+    for item1 in [float(shareCap_list[i]) + float(Reserves_list[i]) for i in range(len(shareCap_list))]:
+        worksheet.write(row, col, item1, cen)
+        row += 1
+
     row, col = 4, 5
     for item1 in pldates_list:
         worksheet.write(row, col, item1, cen)
@@ -162,6 +169,11 @@ def find_data():
 
     row, col = 4, 9
     for item1 in othInc_list:
+        worksheet.write(row, col, item1, cen)
+        row += 1
+
+    row, col = 4, 10
+    for item1 in [float(sales_list[i]) + float(othInc_list[i]) for i in range(len(shareCap_list))]:
         worksheet.write(row, col, item1, cen)
         row += 1
 
