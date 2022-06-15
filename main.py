@@ -103,9 +103,7 @@ def find_data():
         'valign': 'vcenter'})
 
     for slicingIndexb in range(len(borrowings_dates_list)):
-        if "2016" in borrowings_dates_list[slicingIndexb]:
-            break
-        elif "2017" in borrowings_dates_list[slicingIndexb]:
+        if "2017" in borrowings_dates_list[slicingIndexb]:
             break
         elif "2018" in borrowings_dates_list[slicingIndexb]:
             break
@@ -121,9 +119,7 @@ def find_data():
             slicingIndexb = slicingIndexb + 1
 
     for slicingIndex in range(len(pldates_list)):
-        if "2016" in pldates_list[slicingIndex]:
-            break
-        elif "2017" in pldates_list[slicingIndex]:
+        if "2017" in pldates_list[slicingIndex]:
             break
         elif "2018" in pldates_list[slicingIndex]:
             break
