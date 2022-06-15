@@ -1,18 +1,21 @@
+from ast import Continue
 from time import process_time_ns
+from typing import final
 from bs4 import BeautifulSoup as bs
 from numpy import append
 import requests
 import xlsxwriter
 import os
+import openpyxl
 
 # Setting up the directory to save the excel file in the same folder.
 os.chdir(r'C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Scraped Data')
 
 
-def find_data():
-
+def find_data(link):
+    print(link)
     # To fetch the html data from the website
-    html_text = requests.get('https://www.screener.in/company/540519/consolidated/').text
+    html_text = requests.get(link).text
 
     # Parsing the data using lxml Parser and Beautiful Soup Library
     soup = bs(html_text, 'lxml')
@@ -202,4 +205,18 @@ def find_data():
 
 
 if __name__ == '__main__':
-    find_data()
+
+    location = (r"C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Stock Company List.xlsx")
+
+    wb = openpyxl.load_workbook(location)
+    sheet = wb.active
+    link = []
+    for i in range(1, 28):
+        link.append(sheet.cell(row=i, column=1).value)
+    
+    for item in link:
+        try:
+            find_data(item)
+        except:
+            Continue
+            print(f"An exception occurred with {item}")

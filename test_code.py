@@ -1,22 +1,12 @@
-from bs4 import BeautifulSoup as bs
-from numpy import append
-import requests as re
-import os
+import openpyxl
 
-os.chdir(r'C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping')
+# os.chdir(r'C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping')
 
+location = (r"C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Stock Company List.xlsx")
 
-def find_data():
+wb = openpyxl.load_workbook(location)
+sheet = wb.active
+link = []
+for i in range(1, 28):
+    link.append(sheet.cell(row=i, column=1).value)
 
-    html_text = re.get(
-        'https://www.screener.in/company/540519/consolidated/#profit-loss').text
-    # html_text = re.get(
-    #     'https://www.screener.in/company/540455/').text
-
-    soup = bs(html_text, 'lxml')
-    borrowings_dates = soup.find(
-        'section', id='balance-sheet', class_='card card-large').table.thead.tr.text.strip().split('\n')
-    print(borrowings_dates)
-
-
-find_data()
