@@ -13,7 +13,7 @@ def find_data():
 
     # To fetch the html data from the website
     html_text = requests.get(
-        'https://www.screener.in/company/540952/').text
+        'https://www.screener.in/company/540416/consolidated/').text
 
     # Parsing the data using lxml Parser and Beautiful Soup Library
     soup = bs(html_text, 'lxml')
@@ -161,7 +161,10 @@ def find_data():
     arow = 1
     worksheet.write(1, 0, "Company", title)
     worksheet.write(3, 0, Company, title)
-    for ele in range(6, len(updated_pldates_list)*len(shareHoldersFund), 6):
+    print(updated_pldates_list)
+    print(updated_pat_list)
+    
+    for ele in range(6, len(updated_pldates_list)*6, 6):
 
         worksheet.merge_range(
             0, ele-5, 0, ele, updated_pldates_list[int((ele/6)-1)], merge_format)
