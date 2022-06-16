@@ -1,21 +1,19 @@
-from ast import Continue
 from time import process_time_ns
-from typing import final
 from bs4 import BeautifulSoup as bs
 from numpy import append
 import requests
 import xlsxwriter
 import os
-import openpyxl
 
 # Setting up the directory to save the excel file in the same folder.
 os.chdir(r'C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Scraped Data')
 
 
-def find_data(link, row):
-    print(link)
+def find_data():
+
     # To fetch the html data from the website
-    html_text = requests.get(link).text
+    html_text = requests.get(
+        'https://www.screener.in/company/540519/consolidated/').text
 
     # Parsing the data using lxml Parser and Beautiful Soup Library
     soup = bs(html_text, 'lxml')
@@ -83,7 +81,7 @@ def find_data(link, row):
     othInc_list = othInc[othInc_i+15: tax_i].strip().split('\n')
 
     # Create a workbook and add a worksheet
-    workbook = xlsxwriter.Workbook('Data.xlsx')
+    workbook = xlsxwriter.Workbook(f'{Company}_Data.xlsx')
     worksheet = workbook.add_worksheet()
 
     # Borrowings Coloum (B) width
@@ -156,23 +154,23 @@ def find_data(link, row):
     # Headings Declarations
     worksheet.merge_range('B1:G1', 'Mar 2016', merge_format)
 
-    arow = row+1
+    arow = 1
     worksheet.write(1, 0, "Company", title)
-    worksheet.write(arow+2, 0, Company, title)
+    worksheet.write(3, 0, Company, title)
 
     for ele in range(6, 6*(len(shareHoldersFund)+1), 6):
         worksheet.merge_range(
             0, ele-5, 0, ele, updated_borrowings_dates_list[int((ele/6)-1)], merge_format)
 
         worksheet.set_column(ele-5, ele-5, 15)
-        worksheet.write(1, ele-5, "Shareholder", title)
-        worksheet.write(2, ele-5, "Funds", title)
+        worksheet.write(arow, ele-5, "Shareholder", title)
+        worksheet.write(arow+1, ele-5, "Funds", title)
 
-        worksheet.write(1, ele-4, "Debts", title)
+        worksheet.write(arow, ele-4, "Debts", title)
 
         worksheet.set_column(ele, ele, 10)
-        worksheet.write(1, ele, "Cash", title)
-        worksheet.write(2, ele, "Cash Eq", title)
+        worksheet.write(arow, ele, "Cash", title)
+        worksheet.write(arow+1, ele, "Cash Eq", title)
 
         worksheet.write(
             arow+2, ele-5, shareHoldersFund[int((ele/6)-1)], title)
@@ -184,16 +182,16 @@ def find_data(link, row):
             0, ele1-5, 0, ele1, updated_pldates_list[int((ele1/6)-1)], merge_format)
 
         worksheet.set_column(ele1-3, ele1-3, 15)
-        worksheet.write(1, ele1-3, "Total", title)
-        worksheet.write(2, ele1-3, "Revenue", title)
+        worksheet.write(arow, ele1-3, "Total", title)
+        worksheet.write(arow+1, ele1-3, "Revenue", title)
 
-        worksheet.write(1, ele1-2, "PBT", title)
+        worksheet.write(arow, ele1-2, "PBT", title)
 
-        worksheet.write(2, ele1-1, "PAT", title)
+        worksheet.write(arow, ele1-1, "PAT", title)
 
         worksheet.set_column(ele1, ele1, 10)
-        worksheet.write(1, ele1, "Cash", title)
-        worksheet.write(2, ele1, "Cash Eq", title)
+        worksheet.write(arow, ele1, "Cash", title)
+        worksheet.write(arow+1, ele1, "Cash Eq", title)
 
         worksheet.write(arow+2, ele1-3, totalRevenue[int((ele1/6)-1)], title)
         worksheet.write(
@@ -205,18 +203,4 @@ def find_data(link, row):
 
 
 if __name__ == '__main__':
-
-    location = (r"C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Stock Company List.xlsx")
-
-    wb = openpyxl.load_workbook(location)
-    sheet = wb.active
-    link = []
-    for i in range(1, 28):
-        link.append(sheet.cell(row=i, column=1).value)
-
-    for item in link:
-        try:
-            find_data(item, link.index(item))
-        except:
-            Continue
-            print(f"An exception occurred with {item}")
+    find_data()

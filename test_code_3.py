@@ -11,6 +11,12 @@ import openpyxl
 # Setting up the directory to save the excel file in the same folder.
 os.chdir(r'C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Scraped Data')
 
+location = (r'C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Scraped Data\Merged_Data.xlsx')
+
+workbook = xlsxwriter.Workbook('Merged_Data.xlsx')
+worksheet = workbook.add_worksheet()
+workbook.close()
+
 
 def find_data(link, row):
     print(link)
@@ -82,28 +88,6 @@ def find_data(link, row):
     tax_i = othInc.find('Interest')
     othInc_list = othInc[othInc_i+15: tax_i].strip().split('\n')
 
-    # Create a workbook and add a worksheet
-    workbook = xlsxwriter.Workbook('Data.xlsx')
-    worksheet = workbook.add_worksheet()
-
-    # Borrowings Coloum (B) width
-    worksheet.set_column('A:A', 30)
-    worksheet.set_column('B:B', 15)
-    worksheet.set_column('D:D', 15)
-    worksheet.set_column('G:G', 10)
-
-    # Defined Formats
-    bold = workbook.add_format({'bold': True})
-    cen = workbook.add_format({'align': 'center', 'valign': 'vcenter'})
-    title = workbook.add_format({
-        'align': 'center',
-        'valign': 'vcenter',
-        'bold': True})
-    merge_format = workbook.add_format({
-        'bold': 1,
-        'align': 'center',
-        'valign': 'vcenter'})
-
     for slicingIndexb in range(len(borrowings_dates_list)):
         if "2017" in borrowings_dates_list[slicingIndexb]:
             break
@@ -153,62 +137,60 @@ def find_data(link, row):
     totalRevenue = [float(updated_sales_listt[i]) + float(updated_othInc_list[i])
                     for i in range(len(updated_sales_listt))]
 
-    # Headings Declarations
-    worksheet.merge_range('B1:G1', 'Mar 2016', merge_format)
+    wb = openpyxl.load_workbook(location)
+    sheet = wb.active
 
     arow = row+1
-    worksheet.write(1, 0, "Company", title)
-    worksheet.write(arow+2, 0, Company, title)
+    sheet.cell(row=2, column=1).value = "Company"
+    sheet.cell(row=arow+3, column=1).value = Company
 
     for ele in range(6, 6*(len(shareHoldersFund)+1), 6):
-        worksheet.merge_range(
-            0, ele-5, 0, ele, updated_borrowings_dates_list[int((ele/6)-1)], merge_format)
+        sheet.merge_cells(start_row=1, start_column=ele -
+                          4, end_row=1, end_column=ele+1)
+        sheet.cell(
+            1, ele-4).value = updated_borrowings_dates_list[int((ele/6)-1)]
 
-        worksheet.set_column(ele-5, ele-5, 15)
-        worksheet.write(1, ele-5, "Shareholder", title)
-        worksheet.write(2, ele-5, "Funds", title)
+        sheet.cell(2, ele-4).value = "Shareholder"
+        sheet.cell(3, ele-4).value = "Funds"
 
-        worksheet.write(1, ele-4, "Debts", title)
+        sheet.cell(2, ele-3).value = "Debts"
 
-        worksheet.set_column(ele, ele, 10)
-        worksheet.write(1, ele, "Cash", title)
-        worksheet.write(2, ele, "Cash Eq", title)
+        sheet.cell(2, ele+1).value = "Cash"
+        sheet.cell(3, ele+1).value = "Cash Eq"
 
-        worksheet.write(
-            arow+2, ele-5, shareHoldersFund[int((ele/6)-1)], title)
-        worksheet.write(
-            arow+2, ele-4, updated_borrowings_values_list[int((ele/6)-1)], title)
+        sheet.cell(
+            arow+3, ele-4).value = shareHoldersFund[int((ele/6)-1)]
+        sheet.cell(
+            arow+3, ele-3).value = updated_borrowings_values_list[int((ele/6)-1)]
 
     for ele1 in range(6, 6*(len(totalRevenue)+1), 6):
-        worksheet.merge_range(
-            0, ele1-5, 0, ele1, updated_pldates_list[int((ele1/6)-1)], merge_format)
+        sheet.merge_cells(start_row=1, start_column=ele1 -
+                          4, end_row=1, end_column=ele1+1)
+        sheet.cell(
+            1, ele1-4).value = updated_pldates_list[int((ele1/6)-1)]
 
-        worksheet.set_column(ele1-3, ele1-3, 15)
-        worksheet.write(1, ele1-3, "Total", title)
-        worksheet.write(2, ele1-3, "Revenue", title)
+        sheet.cell(2, ele1-2).value = "Total"
+        sheet.cell(3, ele1-3).value = "Revenue"
 
-        worksheet.write(1, ele1-2, "PBT", title)
+        sheet.cell(2, ele1-1).value = "PBT"
+        sheet.cell(2, ele1).value = "PAT"
 
-        worksheet.write(2, ele1-1, "PAT", title)
+        sheet.cell(
+            arow+3, ele1-2).value = totalRevenue[int((ele1/6)-1)]
+        sheet.cell(
+            arow+3, ele1-1).value = updated_pbt_list[int((ele1/6)-1)]
+        sheet.cell(
+            arow+3, ele1).value = updated_pat_list[int((ele1/6)-1)]
 
-        worksheet.set_column(ele1, ele1, 10)
-        worksheet.write(1, ele1, "Cash", title)
-        worksheet.write(2, ele1, "Cash Eq", title)
-
-        worksheet.write(arow+2, ele1-3, totalRevenue[int((ele1/6)-1)], title)
-        worksheet.write(
-            arow+2, ele1-2, updated_pbt_list[int((ele1/6)-1)], title)
-        worksheet.write(
-            arow+2, ele1-1, updated_pat_list[int((ele1/6)-1)], title)
-
-    workbook.close()
+    wb.save(location)
 
 
 if __name__ == '__main__':
 
-    location = (r"C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Stock Company List.xlsx")
+    location_2 = (
+        r"C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Stock Company List.xlsx")
 
-    wb = openpyxl.load_workbook(location)
+    wb = openpyxl.load_workbook(location_2)
     sheet = wb.active
     link = []
     for i in range(1, 28):
