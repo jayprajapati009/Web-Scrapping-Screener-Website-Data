@@ -13,7 +13,7 @@ def find_data():
 
     # To fetch the html data from the website
     html_text = requests.get(
-        'https://www.screener.in/company/540519/consolidated/').text
+        'https://www.screener.in/company/540614/consolidated/').text
 
     # Parsing the data using lxml Parser and Beautiful Soup Library
     soup = bs(html_text, 'lxml')

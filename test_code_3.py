@@ -1,5 +1,5 @@
 from ast import Continue
-from time import process_time_ns
+import time
 from typing import final
 from bs4 import BeautifulSoup as bs
 from numpy import append
@@ -25,7 +25,6 @@ def find_data(link, row):
 
     # Parsing the data using lxml Parser and Beautiful Soup Library
     soup = bs(html_text, 'lxml')
-
     ##### Company Name #####
     Company = soup.find(
         'h1', class_='margin-0').text
@@ -89,7 +88,9 @@ def find_data(link, row):
     othInc_list = othInc[othInc_i+15: tax_i].strip().split('\n')
 
     for slicingIndexb in range(len(borrowings_dates_list)):
-        if "2017" in borrowings_dates_list[slicingIndexb]:
+        if "2016" in borrowings_dates_list[slicingIndexb]:
+            break
+        elif "2017" in borrowings_dates_list[slicingIndexb]:
             break
         elif "2018" in borrowings_dates_list[slicingIndexb]:
             break
@@ -105,7 +106,9 @@ def find_data(link, row):
             slicingIndexb = slicingIndexb + 1
 
     for slicingIndex in range(len(pldates_list)):
-        if "2017" in pldates_list[slicingIndex]:
+        if "2016" in pldates_list[slicingIndex]:
+            break
+        elif "2017" in pldates_list[slicingIndex]:
             break
         elif "2018" in pldates_list[slicingIndex]:
             break
@@ -119,6 +122,13 @@ def find_data(link, row):
             break
         else:
             slicingIndex = slicingIndex + 1
+
+    all_list = [borrowings_values_list,
+                shareCap_list, Reserves_list, pbt_list, pat_list, sales_list, othInc_list]
+
+    for ia in all_list:
+        for ja in ia:
+            ia[ia.index(ja)] = ja.replace(',', '')
 
     updated_borrowings_dates_list = borrowings_dates_list[slicingIndexb:len(
         borrowings_dates_list)]
@@ -163,6 +173,10 @@ def find_data(link, row):
         sheet.cell(
             arow+3, ele-3).value = updated_borrowings_values_list[int((ele/6)-1)]
 
+    if len(updated_pldates_list) != len(totalRevenue):
+        for itt in range(abs(len(updated_pldates_list) - len(totalRevenue))):
+            updated_pldates_list.append("TTM")
+
     for ele1 in range(6, 6*(len(totalRevenue)+1), 6):
         sheet.merge_cells(start_row=1, start_column=ele1 -
                           4, end_row=1, end_column=ele1+1)
@@ -188,17 +202,23 @@ def find_data(link, row):
 if __name__ == '__main__':
 
     location_2 = (
-        r"C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Stock Company List.xlsx")
+        r"C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Links_2.xlsx")
 
     wb = openpyxl.load_workbook(location_2)
     sheet = wb.active
     link = []
-    for i in range(1, 28):
+    for i in range(1, 117):
         link.append(sheet.cell(row=i, column=1).value)
 
     for item in link:
-        try:
-            find_data(item, link.index(item))
-        except:
-            Continue
-            print(f"An exception occurred with {item}")
+        find_data(item, link.index(item))
+        time_wait = 1
+        time.sleep(time_wait)
+
+        # try:
+        #     find_data(item, link.index(item))
+        #     time_wait = 0.1
+        #     time.sleep(time_wait)
+        # except:
+        #     Continue
+        #     print(f"An exception occurred with {item}")
