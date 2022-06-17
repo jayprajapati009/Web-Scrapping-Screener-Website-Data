@@ -202,17 +202,17 @@ def find_data(link, row):
 if __name__ == '__main__':
 
     location_2 = (
-        r"C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Links_2.xlsx")
+        r"C:\Users\jaypr\Desktop\Tech Stack\VSCodes\Web Scrapping\StockScrapping\Scrapping Screener Website Data\Stock Company List.xlsx")
 
     wb = openpyxl.load_workbook(location_2)
     sheet = wb.active
     link = []
-    for i in range(1, 117):
+    for i in range(1, 28):
         link.append(sheet.cell(row=i, column=1).value)
 
     for item in link:
         find_data(item, link.index(item))
-        time_wait = 1
+        time_wait = 0.1
         time.sleep(time_wait)
 
         # try:
