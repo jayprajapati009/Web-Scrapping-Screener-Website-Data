@@ -4,6 +4,8 @@ This is a project, where the data of stock prices is being scraped from https://
 
 Quick Features:
 
-$ Auto-generated Excel Sheets
-$ Auto aligned data
-$ File Named saved by the Name of the Company
+- Auto-generated Excel Sheets
+
+- Auto aligned data
+
+- File Named saved by the Name of the Company
